@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/naude/slite-cli/internal/slite"
+	"github.com/naude-candide/slite-cli/internal/slite"
 )
 
 func newClient() (*slite.Client, error) {

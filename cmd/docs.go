@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/naude/slite-cli/internal/output"
+	"github.com/naude-candide/slite-cli/internal/output"
 )
 
 var (

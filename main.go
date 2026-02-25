@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/naude/slite-cli/cmd"
+	"github.com/naude-candide/slite-cli/cmd"
 )
 
 func main() {

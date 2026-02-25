@@ -1,4 +1,4 @@
-module github.com/naude/slite-cli
+module github.com/naude-candide/slite-cli
 
 go 1.22
 

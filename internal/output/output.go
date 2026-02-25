@@ -6,7 +6,7 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/naude/slite-cli/internal/slite"
+	"github.com/naude-candide/slite-cli/internal/slite"
 )
 
 func RenderMe(me *slite.MeResponse, asJSON bool) error {
