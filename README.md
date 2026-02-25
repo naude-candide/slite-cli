@@ -37,6 +37,7 @@ Optional env vars:
 - `VERSION=v0.1.0` to install a specific release tag (default: latest)
 - `INSTALL_DIR=$HOME/bin` to override install location
 - `REPO=owner/repo` to install from a different repository
+- `SKIP_API_KEY_PROMPT=1` to disable interactive API key setup
 
 Example:
 
@@ -44,6 +45,8 @@ Example:
 VERSION=v0.1.0 INSTALL_DIR=$HOME/bin \
 curl -fsSL https://raw.githubusercontent.com/naude-candide/slite-cli/main/scripts/install.sh | bash
 ```
+
+By default, the installer prompts for `SLITE_API_KEY` and can persist it to `~/.zshrc`.
 
 Release assets expected by installer:
 - `slite-darwin-arm64.tar.gz`
