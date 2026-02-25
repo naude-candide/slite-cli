@@ -5,6 +5,9 @@ Small Go CLI wrapper around the Slite API.
 ## Commands
 
 - `slite me`
+- `slite auth login [--no-persist] [--from-stdin]`
+- `slite auth status [--check]`
+- `slite auth logout`
 - `slite docs list [--owner <id>] [--limit 20] [--offset 0]`
 - `slite docs get <id>`
 - `slite search <query> [--limit 20] [--offset 0]`
@@ -15,6 +18,13 @@ Set your API key in the environment:
 
 ```bash
 export SLITE_API_KEY=your_api_key
+```
+
+Or use:
+
+```bash
+slite auth login
+slite auth status --check
 ```
 
 ## Build
