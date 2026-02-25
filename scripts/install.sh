@@ -79,6 +79,7 @@ echo
 echo "Run: ${BIN_NAME} --help"
 
 prompt_for_api_key() {
+  local tty_device="/dev/tty"
   if [[ "${SKIP_API_KEY_PROMPT:-0}" == "1" ]]; then
     return
   fi
@@ -86,14 +87,14 @@ prompt_for_api_key() {
     echo "SLITE_API_KEY is already set in this shell."
     return
   fi
-  if [[ ! -t 0 ]]; then
+  if [[ ! -r "$tty_device" ]]; then
     echo "Non-interactive shell detected; skipping API key prompt."
     return
   fi
 
   echo
   echo "Set up authentication now."
-  read -r -s -p "Enter your Slite API key (leave blank to skip): " entered_key
+  read -r -s -p "Enter your Slite API key (leave blank to skip): " entered_key < "$tty_device"
   echo
   if [[ -z "${entered_key}" ]]; then
     echo "Skipped API key setup."
@@ -103,7 +104,7 @@ prompt_for_api_key() {
   export SLITE_API_KEY="${entered_key}"
   echo "SLITE_API_KEY exported for current shell."
 
-  read -r -p "Persist to ~/.zshrc for future shells? [Y/n]: " persist_answer
+  read -r -p "Persist to ~/.zshrc for future shells? [Y/n]: " persist_answer < "$tty_device"
   case "${persist_answer:-Y}" in
     y|Y|yes|YES|"")
       if grep -q '^export SLITE_API_KEY=' "${HOME}/.zshrc" 2>/dev/null; then
