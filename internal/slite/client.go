@@ -104,7 +104,7 @@ func (c *Client) CreateNote(ctx context.Context, payload map[string]any) (*NoteD
 
 func (c *Client) UpdateNote(ctx context.Context, id string, payload map[string]any) (*NoteDetail, error) {
 	var out map[string]any
-	if err := c.doJSON(ctx, http.MethodPatch, "/v1/notes/"+url.PathEscape(id), nil, payload, &out); err != nil {
+	if err := c.doJSON(ctx, http.MethodPut, "/v1/notes/"+url.PathEscape(id), nil, payload, &out); err != nil {
 		return nil, err
 	}
 	return extractNoteDetail(out)

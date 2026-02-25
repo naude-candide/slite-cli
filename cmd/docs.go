@@ -178,7 +178,7 @@ func buildNotePayload(title, markdown, parent, bodyJSON string) (map[string]any,
 		payload["markdown"] = markdown
 	}
 	if parent != "" {
-		payload["parent"] = parent
+		payload["parentNoteId"] = parent
 	}
 
 	if len(payload) == 0 {
