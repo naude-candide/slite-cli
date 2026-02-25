@@ -26,9 +26,19 @@ type NoteDetail struct {
 }
 
 type NotesResponse struct {
-	Hits []Note `json:"hits"`
+	Hits       []Note `json:"hits"`
+	Cursor     string `json:"cursor,omitempty"`
+	NextCursor string `json:"nextCursor,omitempty"`
 }
 
 type SearchResponse struct {
-	Hits []Note `json:"hits"`
+	Hits       []Note `json:"hits"`
+	Cursor     string `json:"cursor,omitempty"`
+	NextCursor string `json:"nextCursor,omitempty"`
+}
+
+type DeleteResponse struct {
+	ID      string `json:"id"`
+	Deleted bool   `json:"deleted"`
+	Status  string `json:"status,omitempty"`
 }

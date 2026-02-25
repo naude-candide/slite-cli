@@ -57,6 +57,17 @@ func RenderSearch(result *slite.SearchResponse, asJSON bool) error {
 	return tw.Flush()
 }
 
+func RenderDelete(result *slite.DeleteResponse, asJSON bool) error {
+	if asJSON {
+		return writeJSON(result)
+	}
+
+	tw := tabwriter.NewWriter(os.Stdout, 2, 4, 2, ' ', 0)
+	fmt.Fprintln(tw, "ID\tDELETED\tSTATUS")
+	fmt.Fprintf(tw, "%s\t%t\t%s\n", result.ID, result.Deleted, result.Status)
+	return tw.Flush()
+}
+
 func writeJSON(v any) error {
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")

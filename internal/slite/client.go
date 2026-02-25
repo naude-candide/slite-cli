@@ -1,6 +1,7 @@
 package slite
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -52,13 +53,13 @@ func NewClient(cfg Config) (*Client, error) {
 
 func (c *Client) Me(ctx context.Context) (*MeResponse, error) {
 	var out MeResponse
-	if err := c.getJSON(ctx, "/v1/me", nil, &out); err != nil {
+	if err := c.doJSON(ctx, http.MethodGet, "/v1/me", nil, nil, &out); err != nil {
 		return nil, err
 	}
 	return &out, nil
 }
 
-func (c *Client) ListNotes(ctx context.Context, owner string, limit, offset int) (*NotesResponse, error) {
+func (c *Client) ListNotes(ctx context.Context, owner string, limit, offset int, cursor string) (*NotesResponse, error) {
 	q := url.Values{}
 	if owner != "" {
 		q.Set("owner", owner)
@@ -69,9 +70,12 @@ func (c *Client) ListNotes(ctx context.Context, owner string, limit, offset int)
 	if offset > 0 {
 		q.Set("offset", strconv.Itoa(offset))
 	}
+	if cursor != "" {
+		q.Set("cursor", cursor)
+	}
 
 	var out NotesResponse
-	if err := c.getJSON(ctx, "/v1/notes", q, &out); err != nil {
+	if err := c.doJSON(ctx, http.MethodGet, "/v1/notes", q, nil, &out); err != nil {
 		return nil, err
 	}
 	return &out, nil
@@ -79,7 +83,7 @@ func (c *Client) ListNotes(ctx context.Context, owner string, limit, offset int)
 
 func (c *Client) GetNote(ctx context.Context, id string) (*NoteDetail, error) {
 	var out map[string]any
-	if err := c.getJSON(ctx, "/v1/notes/"+url.PathEscape(id), nil, &out); err != nil {
+	if err := c.doJSON(ctx, http.MethodGet, "/v1/notes/"+url.PathEscape(id), nil, nil, &out); err != nil {
 		return nil, err
 	}
 
@@ -90,7 +94,35 @@ func (c *Client) GetNote(ctx context.Context, id string) (*NoteDetail, error) {
 	return note, nil
 }
 
-func (c *Client) SearchNotes(ctx context.Context, query string, limit, offset int) (*SearchResponse, error) {
+func (c *Client) CreateNote(ctx context.Context, payload map[string]any) (*NoteDetail, error) {
+	var out map[string]any
+	if err := c.doJSON(ctx, http.MethodPost, "/v1/notes", nil, payload, &out); err != nil {
+		return nil, err
+	}
+	return extractNoteDetail(out)
+}
+
+func (c *Client) UpdateNote(ctx context.Context, id string, payload map[string]any) (*NoteDetail, error) {
+	var out map[string]any
+	if err := c.doJSON(ctx, http.MethodPatch, "/v1/notes/"+url.PathEscape(id), nil, payload, &out); err != nil {
+		return nil, err
+	}
+	return extractNoteDetail(out)
+}
+
+func (c *Client) DeleteNote(ctx context.Context, id string) (*DeleteResponse, error) {
+	var out map[string]any
+	if err := c.doJSON(ctx, http.MethodDelete, "/v1/notes/"+url.PathEscape(id), nil, nil, &out); err != nil {
+		return nil, err
+	}
+	return &DeleteResponse{
+		ID:      firstString(out, "id"),
+		Deleted: true,
+		Status:  firstString(out, "status", "result"),
+	}, nil
+}
+
+func (c *Client) SearchNotes(ctx context.Context, query string, limit, offset int, cursor string) (*SearchResponse, error) {
 	q := url.Values{}
 	q.Set("query", query)
 	if limit > 0 {
@@ -99,29 +131,49 @@ func (c *Client) SearchNotes(ctx context.Context, query string, limit, offset in
 	if offset > 0 {
 		q.Set("offset", strconv.Itoa(offset))
 	}
+	if cursor != "" {
+		q.Set("cursor", cursor)
+	}
 
 	var out SearchResponse
-	if err := c.getJSON(ctx, "/v1/search-notes", q, &out); err != nil {
+	if err := c.doJSON(ctx, http.MethodGet, "/v1/search-notes", q, nil, &out); err != nil {
 		return nil, err
 	}
 	return &out, nil
 }
 
-func (c *Client) getJSON(ctx context.Context, path string, query url.Values, out any) error {
+func (c *Client) doJSON(ctx context.Context, method, path string, query url.Values, in any, out any) error {
 	endpoint := c.baseURL + path
 	if len(query) > 0 {
 		endpoint += "?" + query.Encode()
 	}
 
+	var reqBody []byte
+	var err error
+	if in != nil {
+		reqBody, err = json.Marshal(in)
+		if err != nil {
+			return fmt.Errorf("encode request: %w", err)
+		}
+	}
+
 	var lastErr error
 	for attempt := 0; attempt < 3; attempt++ {
-		req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
+		var bodyReader io.Reader
+		if len(reqBody) > 0 {
+			bodyReader = bytes.NewReader(reqBody)
+		}
+
+		req, err := http.NewRequestWithContext(ctx, method, endpoint, bodyReader)
 		if err != nil {
 			return err
 		}
 
 		req.Header.Set("x-slite-api-key", c.apiKey)
 		req.Header.Set("Accept", "application/json")
+		if len(reqBody) > 0 {
+			req.Header.Set("Content-Type", "application/json")
+		}
 
 		resp, err := c.httpClient.Do(req)
 		if err != nil {
@@ -139,11 +191,11 @@ func (c *Client) getJSON(ctx context.Context, path string, query url.Values, out
 		}
 
 		if c.debug {
-			_, _ = fmt.Fprintf(os.Stderr, "[%d] GET %s\n", resp.StatusCode, endpoint)
+			_, _ = fmt.Fprintf(os.Stderr, "[%d] %s %s\n", resp.StatusCode, method, endpoint)
 		}
 
 		if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-			if len(body) == 0 {
+			if len(body) == 0 || out == nil {
 				return nil
 			}
 			if err := json.Unmarshal(body, out); err != nil {

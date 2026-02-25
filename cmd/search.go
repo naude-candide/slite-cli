@@ -11,6 +11,7 @@ import (
 var (
 	searchLimit  int
 	searchOffset int
+	searchCursor string
 )
 
 var searchCmd = &cobra.Command{
@@ -23,7 +24,7 @@ var searchCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := client.SearchNotes(context.Background(), args[0], searchLimit, searchOffset)
+		result, err := client.SearchNotes(context.Background(), args[0], searchLimit, searchOffset, searchCursor)
 		if err != nil {
 			return err
 		}
@@ -35,5 +36,6 @@ var searchCmd = &cobra.Command{
 func init() {
 	searchCmd.Flags().IntVar(&searchLimit, "limit", 20, "Page size")
 	searchCmd.Flags().IntVar(&searchOffset, "offset", 0, "Offset")
+	searchCmd.Flags().StringVar(&searchCursor, "cursor", "", "Pagination cursor")
 	rootCmd.AddCommand(searchCmd)
 }

@@ -8,9 +8,12 @@ Small Go CLI wrapper around the Slite API.
 - `slite auth login [--no-persist] [--from-stdin]`
 - `slite auth status [--check]`
 - `slite auth logout`
-- `slite docs list [--owner <id>] [--limit 20] [--offset 0]`
+- `slite docs list [--owner <id>] [--limit 20] [--offset 0] [--cursor <token>]`
 - `slite docs get <id>`
-- `slite search <query> [--limit 20] [--offset 0]`
+- `slite docs create [--title <text>] [--markdown <text>] [--parent <id>] [--body-json <json>]`
+- `slite docs update <id> [--title <text>] [--markdown <text>] [--parent <id>] [--body-json <json>]`
+- `slite docs delete <id>`
+- `slite search <query> [--limit 20] [--offset 0] [--cursor <token>]`
 
 ## Auth
 
@@ -94,6 +97,9 @@ The workflow uploads:
 ./slite me
 ./slite docs list --limit 10
 ./slite docs get abc123
+./slite docs create --title "Roadmap" --markdown "# Q2"
+./slite docs update abc123 --title "Roadmap (updated)"
+./slite docs delete abc123
 ./slite search "product roadmap" --json
 ```
 
