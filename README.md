@@ -29,7 +29,6 @@ Or use:
 ```bash
 slite auth login
 slite auth status --check
-slite update
 ```
 
 ## Build
@@ -49,7 +48,7 @@ curl -fsSL https://raw.githubusercontent.com/naude-candide/slite-cli/main/script
 
 Optional env vars:
 
-- `VERSION=v0.1.0` to install a specific release tag (default: latest)
+- `VERSION=v0.1.6` to install a specific release tag (default: latest)
 - `INSTALL_DIR=$HOME/bin` to override install location
 - `REPO=owner/repo` to install from a different repository
 - `SKIP_API_KEY_PROMPT=1` to disable interactive API key setup
@@ -57,7 +56,7 @@ Optional env vars:
 Example:
 
 ```bash
-VERSION=v0.1.0 INSTALL_DIR=$HOME/bin \
+VERSION=v0.1.6 INSTALL_DIR=$HOME/bin \
 curl -fsSL https://raw.githubusercontent.com/naude-candide/slite-cli/main/scripts/install.sh | bash
 ```
 
@@ -98,10 +97,12 @@ The workflow uploads:
 ```bash
 ./slite me
 ./slite docs list --limit 10
+./slite docs list --parent-note-id user-xH5fb4byryKQBO --json
 ./slite docs get abc123
 ./slite docs create --title "Roadmap" --markdown "# Q2"
 ./slite docs update abc123 --title "Roadmap (updated)"
 ./slite docs delete abc123
+./slite update
 ./slite search "product roadmap" --json
 ```
 
@@ -111,5 +112,3 @@ The workflow uploads:
 - `--debug` print status + URL to stderr
 - `--base-url` override API base (default `https://api.slite.com`)
 - `--timeout` request timeout (default `15s`)
-
-See `HANDOFF.md` for project status and resume steps.
