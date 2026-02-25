@@ -12,10 +12,11 @@ import (
 )
 
 var (
-	docsOwner  string
-	docsLimit  int
-	docsOffset int
-	docsCursor string
+	docsOwner        string
+	docsParentNoteID string
+	docsLimit        int
+	docsOffset       int
+	docsCursor       string
 
 	docsCreateTitle    string
 	docsCreateMarkdown string
@@ -42,7 +43,7 @@ var docsListCmd = &cobra.Command{
 			return err
 		}
 
-		notes, err := client.ListNotes(context.Background(), docsOwner, docsLimit, docsOffset, docsCursor)
+		notes, err := client.ListNotes(context.Background(), docsOwner, docsParentNoteID, docsLimit, docsOffset, docsCursor)
 		if err != nil {
 			return err
 		}
@@ -141,6 +142,7 @@ var docsDeleteCmd = &cobra.Command{
 
 func init() {
 	docsListCmd.Flags().StringVar(&docsOwner, "owner", "", "Owner user ID")
+	docsListCmd.Flags().StringVar(&docsParentNoteID, "parent-note-id", "", "Parent note/channel ID")
 	docsListCmd.Flags().IntVar(&docsLimit, "limit", 20, "Page size")
 	docsListCmd.Flags().IntVar(&docsOffset, "offset", 0, "Offset")
 	docsListCmd.Flags().StringVar(&docsCursor, "cursor", "", "Pagination cursor")

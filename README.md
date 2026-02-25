@@ -9,7 +9,7 @@ Small Go CLI wrapper around the Slite API.
 - `slite auth status [--check]`
 - `slite auth logout`
 - `slite update [--version vX.Y.Z]`
-- `slite docs list [--owner <id>] [--limit 20] [--offset 0] [--cursor <token>]`
+- `slite docs list [--owner <id>] [--parent-note-id <id>] [--limit 20] [--offset 0] [--cursor <token>]`
 - `slite docs get <id>`
 - `slite docs create [--title <text>] [--markdown <text>] [--parent <id>] [--body-json <json>]`
 - `slite docs update <id> [--title <text>] [--markdown <text>] [--parent <id>] [--body-json <json>]`

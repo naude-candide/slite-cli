@@ -59,10 +59,13 @@ func (c *Client) Me(ctx context.Context) (*MeResponse, error) {
 	return &out, nil
 }
 
-func (c *Client) ListNotes(ctx context.Context, owner string, limit, offset int, cursor string) (*NotesResponse, error) {
+func (c *Client) ListNotes(ctx context.Context, owner, parentNoteID string, limit, offset int, cursor string) (*NotesResponse, error) {
 	q := url.Values{}
 	if owner != "" {
 		q.Set("owner", owner)
+	}
+	if parentNoteID != "" {
+		q.Set("parentNoteId", parentNoteID)
 	}
 	if limit > 0 {
 		q.Set("limit", strconv.Itoa(limit))
