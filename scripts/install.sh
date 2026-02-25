@@ -46,7 +46,23 @@ ARCHIVE_PATH="${TMP_DIR}/${ARCHIVE_NAME}"
 BIN_PATH="${TMP_DIR}/${BIN_NAME}"
 
 echo "Downloading ${DOWNLOAD_URL}"
-curl -fL --retry 3 --connect-timeout 10 -o "$ARCHIVE_PATH" "$DOWNLOAD_URL"
+if ! curl -fL --retry 3 --connect-timeout 10 -o "$ARCHIVE_PATH" "$DOWNLOAD_URL"; then
+  if command -v gh >/dev/null 2>&1; then
+    echo "Direct download failed; trying authenticated GitHub CLI download."
+    if [[ "$VERSION" == "latest" ]]; then
+      gh release download --repo "$REPO" --pattern "$ARCHIVE_NAME" --dir "$TMP_DIR"
+    else
+      gh release download "$VERSION" --repo "$REPO" --pattern "$ARCHIVE_NAME" --dir "$TMP_DIR"
+    fi
+    if [[ ! -f "$ARCHIVE_PATH" ]]; then
+      echo "Failed to download ${ARCHIVE_NAME} from GitHub release." >&2
+      exit 1
+    fi
+  else
+    echo "Download failed and GitHub CLI (gh) is not available for authenticated fallback." >&2
+    exit 1
+  fi
+fi
 
 tar -xzf "$ARCHIVE_PATH" -C "$TMP_DIR"
 

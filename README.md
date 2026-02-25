@@ -47,6 +47,7 @@ curl -fsSL https://raw.githubusercontent.com/naude-candide/slite-cli/main/script
 ```
 
 By default, the installer prompts for `SLITE_API_KEY` and can persist it to `~/.zshrc`.
+If the repository is private, run `gh auth login` first so the installer can download release assets via GitHub CLI.
 
 Release assets expected by installer:
 - `slite-darwin-arm64.tar.gz`
