@@ -1,0 +1,11 @@
+# Build outputs
+slite
+*.exe
+*.out
+
+# Environment files
+.env
+.env.*
+
+# macOS
+.DS_Store
