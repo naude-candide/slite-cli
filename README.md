@@ -8,6 +8,7 @@ Small Go CLI wrapper around the Slite API.
 - `slite auth login [--no-persist] [--from-stdin]`
 - `slite auth status [--check]`
 - `slite auth logout`
+- `slite update [--version vX.Y.Z]`
 - `slite docs list [--owner <id>] [--limit 20] [--offset 0] [--cursor <token>]`
 - `slite docs get <id>`
 - `slite docs create [--title <text>] [--markdown <text>] [--parent <id>] [--body-json <json>]`
@@ -28,6 +29,7 @@ Or use:
 ```bash
 slite auth login
 slite auth status --check
+slite update
 ```
 
 ## Build
