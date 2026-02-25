@@ -61,6 +61,22 @@ scripts/build-release.sh v0.1.0
 
 This writes tarballs to `dist/` that you can upload to a GitHub release tag.
 
+## Automated releases
+
+GitHub Actions is configured to publish release assets when a version tag is pushed.
+
+Create and push a tag:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+The workflow uploads:
+- `slite-darwin-arm64.tar.gz`
+- `slite-darwin-amd64.tar.gz`
+- `checksums.txt`
+
 ## Examples
 
 ```bash

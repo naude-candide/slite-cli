@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Build macOS archives
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+
+          GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go build -ldflags "-s -w" -o dist/slite .
+          tar -C dist -czf dist/slite-darwin-arm64.tar.gz slite
+          rm -f dist/slite
+
+          GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-s -w" -o dist/slite .
+          tar -C dist -czf dist/slite-darwin-amd64.tar.gz slite
+          rm -f dist/slite
+
+          shasum -a 256 dist/slite-darwin-arm64.tar.gz > dist/checksums.txt
+          shasum -a 256 dist/slite-darwin-amd64.tar.gz >> dist/checksums.txt
+
+      - name: Publish release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/slite-darwin-arm64.tar.gz
+            dist/slite-darwin-amd64.tar.gz
+            dist/checksums.txt

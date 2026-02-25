@@ -17,7 +17,7 @@ build_one() {
   local bin_path="${work_dir}/${BIN_NAME}"
   local archive_path="${OUT_DIR}/${BIN_NAME}-darwin-${arch_suffix}.tar.gz"
 
-  GOOS=darwin GOARCH="$goarch" CGO_ENABLED=0 go build -ldflags "-s -w -X main.version=${VERSION}" -o "$bin_path" .
+  GOOS=darwin GOARCH="$goarch" CGO_ENABLED=0 go build -ldflags "-s -w" -o "$bin_path" .
   tar -C "$work_dir" -czf "$archive_path" "$BIN_NAME"
   shasum -a 256 "$archive_path"
 }
