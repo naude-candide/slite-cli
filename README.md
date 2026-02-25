@@ -24,6 +24,40 @@ go mod tidy
 go build -o slite .
 ```
 
+## Install (macOS)
+
+From GitHub Releases:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/naude-candide/slite-cli/main/scripts/install.sh | bash
+```
+
+Optional env vars:
+
+- `VERSION=v0.1.0` to install a specific release tag (default: latest)
+- `INSTALL_DIR=$HOME/bin` to override install location
+- `REPO=owner/repo` to install from a different repository
+
+Example:
+
+```bash
+VERSION=v0.1.0 INSTALL_DIR=$HOME/bin \
+curl -fsSL https://raw.githubusercontent.com/naude-candide/slite-cli/main/scripts/install.sh | bash
+```
+
+Release assets expected by installer:
+- `slite-darwin-arm64.tar.gz`
+- `slite-darwin-amd64.tar.gz`
+
+To build these release archives locally:
+
+```bash
+chmod +x scripts/build-release.sh
+scripts/build-release.sh v0.1.0
+```
+
+This writes tarballs to `dist/` that you can upload to a GitHub release tag.
+
 ## Examples
 
 ```bash
