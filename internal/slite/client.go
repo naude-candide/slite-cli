@@ -253,6 +253,7 @@ func extractNoteDetail(payload map[string]any) (*NoteDetail, error) {
 			OwnerID:   owner,
 			UpdatedAt: firstString(candidate, "updatedAt", "updated_at", "updated"),
 			URL:       firstString(candidate, "url", "link"),
+			Markdown:  firstString(candidate, "markdown", "content", "body"),
 		}, nil
 	}
 

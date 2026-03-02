@@ -26,6 +26,7 @@ type NoteDetail struct {
 	OwnerID   string `json:"ownerId"`
 	UpdatedAt string `json:"updatedAt"`
 	URL       string `json:"url"`
+	Markdown  string `json:"markdown,omitempty"`
 }
 
 type NotesResponse struct {

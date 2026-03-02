@@ -41,7 +41,14 @@ func RenderNote(note *slite.NoteDetail, asJSON bool) error {
 	tw := tabwriter.NewWriter(os.Stdout, 2, 4, 2, ' ', 0)
 	fmt.Fprintln(tw, "ID\tTITLE\tOWNER\tUPDATED\tURL")
 	fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\n", note.ID, note.Title, note.OwnerID, note.UpdatedAt, note.URL)
-	return tw.Flush()
+	tw.Flush()
+
+	if note.Markdown != "" {
+		fmt.Fprintln(os.Stdout)
+		fmt.Fprintln(os.Stdout, note.Markdown)
+	}
+
+	return nil
 }
 
 func RenderSearch(result *slite.SearchResponse, asJSON bool) error {
