@@ -6,14 +6,18 @@ VERSION="${VERSION:-latest}"
 BIN_NAME="slite"
 ARCHIVE_NAME=""
 
-if [[ "$(uname -s)" != "Darwin" ]]; then
-  echo "This installer currently supports macOS only." >&2
-  exit 1
-fi
+case "$(uname -s)" in
+  Darwin) OS="darwin" ;;
+  Linux)  OS="linux"  ;;
+  *)
+    echo "Unsupported OS: $(uname -s)" >&2
+    exit 1
+    ;;
+esac
 
 case "$(uname -m)" in
-  arm64) ARCH_SUFFIX="arm64" ;;
-  x86_64) ARCH_SUFFIX="amd64" ;;
+  arm64|aarch64) ARCH_SUFFIX="arm64" ;;
+  x86_64)        ARCH_SUFFIX="amd64" ;;
   *)
     echo "Unsupported CPU architecture: $(uname -m)" >&2
     exit 1
@@ -26,7 +30,7 @@ else
   DOWNLOAD_BASE="https://github.com/${REPO}/releases/download/${VERSION}"
 fi
 
-ARCHIVE_NAME="${BIN_NAME}-darwin-${ARCH_SUFFIX}.tar.gz"
+ARCHIVE_NAME="${BIN_NAME}-${OS}-${ARCH_SUFFIX}.tar.gz"
 DOWNLOAD_URL="${DOWNLOAD_BASE}/${ARCHIVE_NAME}"
 
 if [[ -n "${INSTALL_DIR:-}" ]]; then

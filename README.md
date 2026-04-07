@@ -38,7 +38,7 @@ go mod tidy
 go build -o slite .
 ```
 
-## Install (macOS)
+## Install (macOS / Linux)
 
 From GitHub Releases:
 
@@ -66,6 +66,8 @@ If the repository is private, run `gh auth login` first so the installer can dow
 Release assets expected by installer:
 - `slite-darwin-arm64.tar.gz`
 - `slite-darwin-amd64.tar.gz`
+- `slite-linux-arm64.tar.gz`
+- `slite-linux-amd64.tar.gz`
 
 To build these release archives locally:
 

@@ -21,21 +21,22 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Build macOS archives
+      - name: Build release archives
         run: |
           set -euo pipefail
           mkdir -p dist
 
-          GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go build -ldflags "-s -w" -o dist/slite .
-          tar -C dist -czf dist/slite-darwin-arm64.tar.gz slite
-          rm -f dist/slite
+          for target in darwin-arm64 darwin-amd64 linux-arm64 linux-amd64; do
+            GOOS="${target%-*}" GOARCH="${target#*-}" CGO_ENABLED=0 \
+              go build -ldflags "-s -w" -o dist/slite .
+            tar -C dist -czf "dist/slite-${target}.tar.gz" slite
+            rm -f dist/slite
+          done
 
-          GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-s -w" -o dist/slite .
-          tar -C dist -czf dist/slite-darwin-amd64.tar.gz slite
-          rm -f dist/slite
-
-          shasum -a 256 dist/slite-darwin-arm64.tar.gz > dist/checksums.txt
+          shasum -a 256 dist/slite-darwin-arm64.tar.gz  > dist/checksums.txt
           shasum -a 256 dist/slite-darwin-amd64.tar.gz >> dist/checksums.txt
+          shasum -a 256 dist/slite-linux-arm64.tar.gz  >> dist/checksums.txt
+          shasum -a 256 dist/slite-linux-amd64.tar.gz  >> dist/checksums.txt
 
       - name: Publish release assets
         uses: softprops/action-gh-release@v2
@@ -43,4 +44,6 @@ jobs:
           files: |
             dist/slite-darwin-arm64.tar.gz
             dist/slite-darwin-amd64.tar.gz
+            dist/slite-linux-arm64.tar.gz
+            dist/slite-linux-amd64.tar.gz
             dist/checksums.txt
